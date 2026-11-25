@@ -143,6 +143,29 @@
 .px-xf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 14px;border:1px dashed var(--px-line);border-radius:var(--px-r);background:var(--px-panel)}
 .px-xf.vazio{border-style:dashed;opacity:.85}
 .px-xf:not(.vazio){border:1px solid var(--px-a1);box-shadow:inset 4px 0 0 var(--px-a1)}
+.px-orow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--px-line);border-radius:var(--px-r);background:var(--px-panel)}
+.px-orow .px-xf-lbl{margin-right:6px}
+.px-orow{flex-direction:column;align-items:stretch;gap:10px}
+.px-otop{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.px-osearch{flex:1 1 280px;max-width:460px;font:inherit;font-size:.84rem;padding:7px 12px;border:1px solid var(--px-line);border-radius:999px;background:var(--px-panel2);color:var(--px-fg);outline:none}
+.px-osearch:focus{border-color:var(--px-a1);box-shadow:0 0 0 2px var(--px-sel)}
+.px-ochips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.px-ochips .px-msg{font-size:.8rem;color:var(--px-muted)}
+.px-xlsx{margin-left:auto;font:inherit;font-size:.82rem;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid var(--px-a1);background:var(--px-a1);color:var(--px-on);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.px-xlsx:hover{filter:brightness(1.08)}
+.px-xlsx:disabled{opacity:.6;cursor:wait}
+.px-obtn{font:inherit;font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid var(--px-line);background:var(--px-panel2);color:var(--px-fg);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.px-obtn b{font-weight:600;color:var(--px-muted);font-variant-numeric:tabular-nums}
+.px-obtn:hover{border-color:var(--px-a1)}
+.px-obtn[aria-pressed="true"]{border-color:var(--px-a1);background:var(--px-a1);color:var(--px-on)}
+.px-obtn[aria-pressed="true"] b{color:var(--px-on);opacity:.85}
+.px-obtn.mais{border-style:dashed;color:var(--px-muted)}
+.px-rank .sub{grid-column:2/4;font-size:.72rem;color:var(--px-muted);font-variant-numeric:tabular-nums}
+.px-rank .bar.stk{display:flex;height:7px;background:var(--px-soft)}
+.px-rank .bar.stk i{display:block;height:100%}
+.px-rlg{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0 0 8px;font-size:.72rem;color:var(--px-muted)}
+.px-rlg span{display:inline-flex;align-items:center;gap:4px}
+.px-rlg i{width:9px;height:9px;border-radius:2px;display:inline-block}
 .px-xf-hint{font-size:.8rem;color:var(--px-muted)}
 .px-xf-lbl{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--px-muted);margin-right:4px}
 .px-xf-chip{font:inherit;font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--px-a1);background:var(--px-panel2);color:var(--px-fg);cursor:pointer}
@@ -335,8 +358,9 @@
 
   <div class="px-grid">
     <aside class="px-card" id="ranking"><span class="px-flag" title="Representante atribuído pelo território do cliente (cidade/UF). Em ~63% do valor bate com o código do pedido.">ADENDO</span>
-      <h2>Ranking de representantes</h2>
-      <p class="note">Sell-in acumulado jun/25–nov/26 e participação no total.</p>
+      <h2 id="rank-tit">Ranking de representantes</h2>
+      <p class="note" id="rank-note">Sell-in acumulado jun/25–nov/26 e participação no total.</p>
+      <div class="px-rlg" id="rank-lg" hidden></div>
       <ul class="px-rank" data-draw="rank" data-source="rank"></ul>
     </aside>
 
@@ -428,6 +452,14 @@
       <!-- ============ LEADS ============ -->
       <section class="px-tab" id="pg-leads" role="tabpanel" hidden>
         <div class="px-xf vazio" id="xf-leads" data-draw="xf-leads"></div>
+        <div class="px-orow" id="leads-origens" role="group" aria-label="Filtrar por origem">
+          <div class="px-otop">
+            <span class="px-xf-lbl">Origem</span>
+            <input type="search" class="px-osearch" id="orig-busca" placeholder="Digite o evento ou a origem (ex.: intralog, fispal, workshop)…" aria-label="Buscar origem" autocomplete="off">
+            <button type="button" class="px-xlsx" id="btn-xlsx" title="Baixa o ranking de leads por tratar, o detalhe dos leads e o ranking de sell-in com os filtros atuais">⬇ Exportar XLSX</button>
+          </div>
+          <div class="px-ochips" data-draw="lorig-chips" data-source="lorigall"></div>
+        </div>
         <p class="px-lead">De <b data-draw="ld-total" data-source="lsel" data-field="leads" data-row="0">—</b> leads, <b data-draw="ld-conv" data-source="lsel" data-field="convertidos" data-row="0">—</b> foram convertidos (<b data-draw="ld-taxa" data-source="lsel" data-field="taxa_conv" data-row="0">—</b>). <b data-draw="ld-novo" data-source="lsel" data-field="novos_sem_contato" data-row="0">—</b> ainda estão como "Novo", sem tratamento registrado (<b data-draw="ld-novopct" data-source="lsel" data-field="pct_novo" data-row="0">—</b> da base).</p>
         <div class="px-kpis">
           <div class="px-kpi"><h3>Leads</h3><div class="px-kv" data-draw="lk-total" data-source="lsel" data-field="leads" data-row="0">—</div><div class="px-ks">jun/24 a nov/26</div></div>
@@ -809,7 +841,7 @@ window.PX_F = (function(){
     return rows.filter(r => (skip.rep || p.rep === 'r00' || r.rid === p.rep) && (skip.mes || has(p.s_mes, r.m)) && (skip.prod || has(p.s_prod, r.fam)) && (skip.cid || has(p.s_cid, r.cid)) && (skip.uf || has(p.s_uf, r.uf))); }
   // leads
   function lf(rows, p, skip){ skip = skip || {};
-    return rows.filter(r => (p.rep === 'r00' || r.rid === p.rep) && (skip.mes || has(p.l_mes, r.m)) && (skip.orig || has(p.l_orig, r.o)) && (skip.st || has(p.l_st, r.st)) && (skip.mot || !p.l_mot.length || p.l_mot.indexOf(String(r.mot)) >= 0)); }
+    return rows.filter(r => (skip.rep || p.rep === 'r00' || r.rid === p.rep) && (skip.mes || has(p.l_mes, r.m)) && (skip.orig || has(p.l_orig, r.o)) && (skip.st || has(p.l_st, r.st)) && (skip.mot || !p.l_mot.length || p.l_mot.indexOf(String(r.mot)) >= 0)); }
   // oportunidades
   const fechada = r => r.fase === 'Fechado Ganho' || r.fase === 'Fechado Perdido';
   const pk = r => r.prob == null ? 'Sem prob.' : r.prob + '%';
@@ -915,6 +947,19 @@ dash.calc('lorig', {inputs:['leadrows'], title:'Leads por origem', description:'
 dash.calc('lstatus', {inputs:['leadrows'], title:'Status dos leads', description:'Leads por status atual.',
   fn: (leads) => { const F = window.PX_F; const p = F.prm(); const r = F.lf(leads, p, {st: true}); const n = r.length;
     return d3.rollups(r, a => a.length, x => x.st).map(([nome, v]) => ({nome, valor: v, share: n ? v / n : null, on: F.on(p.l_st, nome)})).sort((a, b) => b.valor - a.valor); }});
+dash.calc('lorigall', {inputs:['leadrows'], title:'Origens dos leads', description:'Todas as origens com volume (respeita representante e demais filtros da aba Leads, exceto a própria origem).',
+  fn: (leads) => { const F = window.PX_F; const p = F.prm(); const r = F.lf(leads, p, {orig: true});
+    const tot = d3.rollups(leads, a => a.length, x => x.o);
+    const cur = new Map(d3.rollups(r, a => a.length, x => x.o));
+    return tot.map(([o]) => ({k: o, origem: o || 'Não informada', valor: cur.get(o) || 0, on: F.on(p.l_orig, o)})).sort((a, b) => b.valor - a.valor || (a.origem > b.origem ? 1 : -1)); }});
+dash.calc('lrank', {inputs:['leadrows', 'replist'], title:'Ranking de leads por tratar', description:'Leads em aberto por representante e por etapa (Novo, Tentando contato, Qualificando, Nutrindo), com os filtros da aba Leads (origem, mês, status). Parado = em aberto e criado há mais de 60 dias.',
+  fn: (leads, reps) => { const F = window.PX_F; const p = F.prm(); const r = F.lf(leads, p, {rep: true});
+    const nome = new Map(reps.map(x => [x.id, x.rep])); const ET = ['Novo', 'Tentando contato', 'Qualificando', 'Nutrindo'];
+    const lim = (() => { const [y, m] = F.HOJE.split('-').map(Number); const d = new Date(y, m - 1 - 2, 1); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); })();
+    const M = new Map(); r.forEach(x => { if (!M.has(x.rid)) M.set(x.rid, {id: x.rid, rep: nome.get(x.rid) || x.rid, leads: 0, conv: 0, desq: 0, aberto: 0, parado: 0, Novo: 0, 'Tentando contato': 0, Qualificando: 0, Nutrindo: 0});
+      const g = M.get(x.rid); g.leads++; if (x.cv) g.conv++; if (x.st === 'Desqualificado') g.desq++; if (ET.indexOf(x.st) >= 0) { g[x.st]++; g.aberto++; if (x.m && x.m <= lim) g.parado++; } });
+    const T = d3.sum([...M.values()], g => g.aberto);
+    return [...M.values()].filter(g => g.aberto > 0).map(g => ({...g, share: T ? g.aberto / T : null})).sort((a, b) => b.aberto - a.aberto || b.Novo - a.Novo); }});
 dash.calc('lmotivos', {inputs:['leadrows'], title:'Motivos de desqualificação', description:'Principais motivos registrados na desqualificação.',
   fn: (leads) => { const F = window.PX_F; const p = F.prm(); const r = F.lf(leads, p, {mot: true}).filter(x => x.mot); const t = r.length;
     return d3.rollups(r, a => a.length, x => x.mot).map(([nome, v]) => ({nome, valor: v, share: t ? v / t : null, on: F.on(p.l_mot, nome)})).sort((a, b) => b.valor - a.valor).slice(0, 8); }});
@@ -1035,7 +1080,130 @@ const PXJ = (s) => { try { return JSON.parse(s||'[]'); } catch(e) { return []; }
   txt('ok-vg','osel',r=>P.brl(r.valor_ganho)); txt('ok-g','osel',r=>P.int(r.ganhas)); txt('ok-tg','osel',r=>P.brl(r.ticket_ganho));
   txt('ok-wr','osel',r=>P.pct(r.win_rate)); txt('ok-wrv','osel',r=>P.pct(r.win_rate_valor)); txt('ok-venc','osel',r=>P.int(r.vencidas)); txt('ok-vencv','osel',r=>P.brl(r.valor_vencido));
 
+  window.PX_OMAIS=false;
+  window.PX_OBUSCA='';
+  const PX_NORM=t=>String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  dash.draw('lorig-chips',el=>{
+    const q=dash.data('lorigall'); if(q.status!=='ok'){ el.replaceChildren(); return; }
+    const sel=q.data.filter(r=>r.on); const N=10; const bq=PX_NORM(window.PX_OBUSCA).trim();
+    const mk=(txt,n,on,fn,cls)=>{ const b=document.createElement('button'); b.type='button'; b.className='px-obtn'+(cls?' '+cls:''); b.setAttribute('aria-pressed',on?'true':'false'); b.append(txt); if(n!=null){ const c=document.createElement('b'); c.textContent=P.int(n); b.append(c); } b.onclick=fn; return b; };
+    const todas=mk('Todas',d3.sum(q.data,r=>r.valor),!sel.length,()=>X.clear(['l_orig']));
+    let lista, out;
+    if(bq){
+      const ach=q.data.filter(r=>PX_NORM(r.origem).indexOf(bq)>=0);
+      lista=ach.concat(sel.filter(r=>ach.indexOf(r)<0));
+      out=[todas,...lista.map(r=>mk(r.origem,r.valor,r.on,()=>X.toggle('l_orig',[r.k])))];
+      if(ach.length>1) out.push(mk('Selecionar as '+ach.length,null,false,()=>{ const ks=ach.map(r=>r.k); const p=dash.params()||{}; const cur=Array.isArray(p.l_orig)?p.l_orig:(p.l_orig?[p.l_orig]:[]); dash.setParams({l_orig:[...new Set(cur.concat(ks))]}); },'mais'));
+      if(!ach.length){ const m=document.createElement('span'); m.className='px-msg'; m.textContent='Nenhuma origem contém "'+window.PX_OBUSCA+'".'; out.push(m); }
+    } else {
+      lista=window.PX_OMAIS?q.data:q.data.slice(0,N).concat(sel.filter(r=>q.data.indexOf(r)>=N));
+      out=[todas,...lista.map(r=>mk(r.origem,r.valor,r.on,()=>X.toggle('l_orig',[r.k])))];
+      const rest=q.data.length-N;
+      if(rest>0) out.push(mk(window.PX_OMAIS?'Mostrar menos':'+ '+rest+' origens',null,false,()=>{ window.PX_OMAIS=!window.PX_OMAIS; dash.draw('lorig-chips'); },'mais'));
+    }
+    el.replaceChildren(...out);
+  });
+  (function(){ const inp=document.getElementById('orig-busca'); if(!inp) return;
+    inp.addEventListener('input',()=>{ window.PX_OBUSCA=inp.value; dash.draw('lorig-chips'); });
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); const q=dash.data('lorigall'); const bq=PX_NORM(inp.value).trim(); if(!bq||q.status!=='ok') return;
+        const r=q.data.find(x=>PX_NORM(x.origem).indexOf(bq)>=0); if(r && !r.on) X.toggle('l_orig',[r.k]); }
+      if(e.key==='Escape'){ inp.value=''; window.PX_OBUSCA=''; dash.draw('lorig-chips'); } });
+  })();
+
+  // ---------- Exportação XLSX (gerada no navegador, sem bibliotecas externas) ----------
+  const PX_XLSX=(function(){
+    const enc=new TextEncoder(); const CRC=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; } return t; })();
+    const crc32=b=>{ let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c=CRC[(c^b[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
+    function zip(files){ const parts=[], cen=[]; let off=0; const d=new Date();
+      const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF, dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+      files.forEach(f=>{ const nm=enc.encode(f.name), data=enc.encode(f.data), c=crc32(data);
+        const h=new DataView(new ArrayBuffer(30)); h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true); h.setUint16(10,dt,true); h.setUint16(12,dd,true); h.setUint32(14,c,true); h.setUint32(18,data.length,true); h.setUint32(22,data.length,true); h.setUint16(26,nm.length,true); h.setUint16(28,0,true);
+        parts.push(new Uint8Array(h.buffer),nm,data);
+        const z=new DataView(new ArrayBuffer(46)); z.setUint32(0,0x02014b50,true); z.setUint16(4,20,true); z.setUint16(6,20,true); z.setUint16(8,0x0800,true); z.setUint16(10,0,true); z.setUint16(12,dt,true); z.setUint16(14,dd,true); z.setUint32(16,c,true); z.setUint32(20,data.length,true); z.setUint32(24,data.length,true); z.setUint16(28,nm.length,true); z.setUint32(42,off,true);
+        cen.push(new Uint8Array(z.buffer),nm); off+=30+nm.length+data.length; });
+      const cs=cen.reduce((a,b)=>a+b.length,0); const e=new DataView(new ArrayBuffer(22)); e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,cs,true); e.setUint32(16,off,true);
+      return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}); }
+    const esc=v=>String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const col=n=>{ let s=''; n++; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=Math.floor((n-1)/26); } return s; };
+    // sheet: {name, head:[...], rows:[[...]], widths:[...], fmt:{colIndex:'pct'|'int'|'brl'}, notes:[...]}
+    function sheetXml(sh){ const F=sh.fmt||{}; const st=(j,v)=>typeof v==='number'?(F[j]==='pct'?2:F[j]==='brl'?3:4):0;
+      const cell=(v,r,j,hd)=>{ const ref=col(j)+r; if(v==null||v==='') return ''; if(hd) return '<c r="'+ref+'" s="1" t="inlineStr"><is><t xml:space="preserve">'+esc(v)+'</t></is></c>';
+        if(typeof v==='number'&&isFinite(v)) return '<c r="'+ref+'" s="'+st(j,v)+'"><v>'+v+'</v></c>'; return '<c r="'+ref+'" t="inlineStr"><is><t xml:space="preserve">'+esc(v)+'</t></is></c>'; };
+      let r=1, out=[]; (sh.notes||[]).forEach(n=>{ out.push('<row r="'+r+'">'+'<c r="A'+r+'" s="'+(r===1?5:6)+'" t="inlineStr"><is><t xml:space="preserve">'+esc(n)+'</t></is></c></row>'); r++; });
+      if(sh.notes&&sh.notes.length){ r++; } const hr=r;
+      out.push('<row r="'+r+'">'+sh.head.map((h,j)=>cell(h,r,j,true)).join('')+'</row>'); r++;
+      sh.rows.forEach(row=>{ out.push('<row r="'+r+'">'+row.map((v,j)=>cell(v,r,j,false)).join('')+'</row>'); r++; });
+      const last=col(sh.head.length-1);
+      const cols='<cols>'+sh.head.map((h,j)=>'<col min="'+(j+1)+'" max="'+(j+1)+'" width="'+((sh.widths&&sh.widths[j])||14)+'" customWidth="1"/>').join('')+'</cols>';
+      const pane='<sheetViews><sheetView workbookViewId="0"><pane ySplit="'+hr+'" topLeftCell="A'+(hr+1)+'" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+      return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+pane+cols+'<sheetData>'+out.join('')+'</sheetData>'+(sh.rows.length?'<autoFilter ref="A'+hr+':'+last+(hr+sh.rows.length)+'"/>':'')+'</worksheet>'; }
+    const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="0.0%"/><numFmt numFmtId="165" formatCode="&quot;R$&quot; #,##0"/></numFmts><fonts count="4"><font><sz val="10"/><name val="Arial"/></font><font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Arial"/></font><font><b/><sz val="12"/><name val="Arial"/></font><font><i/><sz val="9"/><color rgb="FF5B6B82"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF06418A"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="7"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="3" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>';
+    function build(sheets){ const files=[];
+      files.push({name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'</Types>'});
+      files.push({name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'});
+      files.push({name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+sheets.map((s,i)=>'<sheet name="'+esc(s.name.slice(0,31))+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>'});
+      files.push({name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+'<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'});
+      files.push({name:'xl/styles.xml',data:styles});
+      sheets.forEach((s,i)=>files.push({name:'xl/worksheets/sheet'+(i+1)+'.xml',data:sheetXml(s)}));
+      return zip(files); }
+    return {build};
+  })();
+  function exportarLeads(){
+    const p=X.prm(); const reps=dash.data('replist').data||[]; const rinfo=new Map(reps.map(r=>[r.id,r]));
+    const og=p.l_orig.length?p.l_orig.join(', '):'Todas'; const repSel=p.rep==='r00'?'Todos os representantes':((rinfo.get(p.rep)||{}).rep||p.rep);
+    const hoje=new Date(); const hs=hoje.toLocaleDateString('pt-BR')+' '+hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const filtros=['Filtros: origem = '+og+' · representante = '+repSel+(p.l_mes.length?' · mês de criação = '+p.l_mes.join(', '):'')+(p.l_st.length?' · status = '+p.l_st.join(', '):'')+(p.l_mot.length?' · motivo = '+p.l_mot.join(', '):''),
+      'Exportado em '+hs+' · fonte: painel comercial (SALES_FORCE_BI .pbix). "Parado" = em aberto e criado há mais de 60 dias (o painel não tem data da última atividade).'];
+    const lr=dash.data('lrank').data||[];
+    const s1={name:'Ranking leads por tratar',notes:['Ranking de leads por tratar · por representante e etapa do pipeline',...filtros],
+      head:['Posição','Representante','Supervisor','Em aberto','% do total em aberto','Novo (sem atendimento)','Tentando contato','Qualificando','Nutrindo','Em atendimento (saíram de Novo)','Parados +60 dias','Total de leads','Convertidos','Taxa de conversão','Desqualificados'],
+      widths:[9,30,16,11,13,14,13,12,11,15,13,12,12,13,14], fmt:{4:'pct',13:'pct'},
+      rows:lr.map((r,i)=>[i+1,r.rep,(rinfo.get(r.id)||{}).supervisor||'',r.aberto,r.share,r.Novo,r['Tentando contato'],r.Qualificando,r.Nutrindo,r.aberto-r.Novo,r.parado,r.leads,r.conv,r.leads?r.conv/r.leads:null,r.desq])};
+    if(lr.length) s1.rows.push(['Total','','',d3.sum(lr,r=>r.aberto),1,d3.sum(lr,r=>r.Novo),d3.sum(lr,r=>r['Tentando contato']),d3.sum(lr,r=>r.Qualificando),d3.sum(lr,r=>r.Nutrindo),d3.sum(lr,r=>r.aberto-r.Novo),d3.sum(lr,r=>r.parado),d3.sum(lr,r=>r.leads),d3.sum(lr,r=>r.conv),d3.sum(lr,r=>r.leads)?d3.sum(lr,r=>r.conv)/d3.sum(lr,r=>r.leads):null,d3.sum(lr,r=>r.desq)]);
+    const rows=X.lf(dash.data('leadrows').data||[],p).slice().sort((a,b)=>{ const ra=(rinfo.get(a.rid)||{}).rep||a.rid, rb=(rinfo.get(b.rid)||{}).rep||b.rid; return ra<rb?-1:ra>rb?1:(a.st<b.st?-1:a.st>b.st?1:0); });
+    const s2={name:'Leads (detalhe)',notes:['Leads um a um com os mesmos filtros · o painel não guarda nome, e-mail ou telefone do lead',...filtros],
+      head:['Representante','Supervisor','Mês de criação','Status','Em aberto?','Parado +60 dias?','Origem','UF','Convertido?','Motivo de desqualificação'],
+      widths:[30,16,14,18,11,15,40,6,12,36],
+      rows:rows.map(x=>{ const ab=['Novo','Tentando contato','Qualificando','Nutrindo'].indexOf(x.st)>=0; const ri=rinfo.get(x.rid)||{};
+        return [ri.rep||x.rid,ri.supervisor||'',x.m?P.mes(x.m):'',x.st,ab?'Sim':'Não',ab&&x.m&&x.m<=lrLim()?'Sim':'Não',x.o||'Não informada',x.uf||'',x.cv?'Sim':'Não',x.mot||'']; })};
+    const rk=dash.data('rank').data||[];
+    const s3={name:'Ranking sell-in',notes:['Ranking de representantes por sell-in (filtros da aba Sell-in)','Exportado em '+hs],
+      head:['Posição','Representante','Supervisor','Sell-in','% do total','Pedidos','Ticket médio','Ago–out/25','Ago–out/26','Var. %'],
+      widths:[9,30,16,16,11,10,14,15,15,10], fmt:{3:'brl',4:'pct',6:'brl',7:'brl',8:'brl',9:'pct'},
+      rows:rk.map((r,i)=>[i+1,r.rep,r.supervisor,r.sellin,r.share,r.pedidos,r.ticket,r.ago_out_25,r.ago_out_26,r.var_pct])};
+    const blob=PX_XLSX.build([s1,s2,s3]);
+    const slug=(p.l_orig.length===1?p.l_orig[0]:(p.l_orig.length?'varias-origens':'todas-origens')).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase();
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='leads_por_tratar_'+slug+'_'+hoje.toISOString().slice(0,10)+'.xlsx'; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+  }
+  function lrLim(){ const [y,m]=X.HOJE.split('-').map(Number); const d=new Date(y,m-1-2,1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+  (function(){ const b=document.getElementById('btn-xlsx'); if(!b) return; b.addEventListener('click',()=>{ b.disabled=true; try{ exportarLeads(); }catch(e){ console.error('xlsx',e); alert('Não foi possível gerar o XLSX: '+e.message); } finally{ setTimeout(()=>b.disabled=false,600); } }); })();
+  const RK_ET=[['Novo','var(--px-bad)','Novo (sem atendimento)'],['Tentando contato','var(--px-a2)','Tentando contato'],['Qualificando','var(--px-a1)','Qualificando'],['Nutrindo','var(--px-a3)','Nutrindo']];
+  function rankLeads(ul){
+    const tit=document.getElementById('rank-tit'), note=document.getElementById('rank-note'), lg=document.getElementById('rank-lg');
+    if(tit) tit.textContent='Ranking de leads por tratar';
+    const po=(dash.params()||{}).l_orig||[]; const og=Array.isArray(po)?po:[po];
+    if(note) note.textContent='Leads em aberto por representante e etapa do pipeline'+(og.length?' · origem: '+og.join(', '):' · todas as origens')+'. "Parado" = em aberto e criado há mais de 60 dias.';
+    if(lg){ if(lg.hidden) lg.hidden=false; lg.replaceChildren(...RK_ET.map(([k,c,n])=>{ const s=document.createElement('span'); const i=document.createElement('i'); i.style.background=c; s.append(i,n); return s; })); }
+    const q=dash.data('lrank'); if(q.status!=='ok'){ ul.replaceChildren(); return; }
+    if(!q.data.length){ ul.replaceChildren(Object.assign(document.createElement('li'),{className:'px-msg',textContent:'Nenhum lead em aberto com os filtros atuais.'})); return; }
+    const cur=dash.params().rep||'r00'; const mx=d3.max(q.data,r=>r.aberto)||1;
+    ul.replaceChildren(...q.data.map((r,i)=>{ const li=document.createElement('li'); const b=document.createElement('button');
+      b.setAttribute('aria-current', r.id===cur?'true':'false');
+      b.title=r.rep+'\n'+RK_ET.map(([k])=>k+': '+P.int(r[k])).join('\n')+'\nParados há +60 dias: '+P.int(r.parado)+'\nTotal de leads no território: '+P.int(r.leads);
+      const pos=document.createElement('span'); pos.className='pos'; pos.textContent=String(i+1).padStart(2,'0');
+      const nm=document.createElement('span'); nm.className='nm'; nm.textContent=r.rep;
+      const vl=document.createElement('span'); vl.className='vl'; vl.textContent=P.int(r.aberto)+' · '+P.pct(r.share);
+      const bar=document.createElement('span'); bar.className='bar stk'; bar.style.width=(100*r.aberto/mx).toFixed(1)+'%';
+      RK_ET.forEach(([k,c])=>{ if(!r[k]) return; const f=document.createElement('i'); f.style.width=(100*r[k]/r.aberto).toFixed(2)+'%'; f.style.background=c; bar.appendChild(f); });
+      const sub=document.createElement('span'); sub.className='sub'; sub.textContent=P.int(r.Novo)+' Novo · '+P.int(r.aberto-r.Novo)+' em atendimento · '+P.int(r.parado)+' parados +60d';
+      b.append(pos,nm,vl,bar,sub); b.onclick=()=>dash.setParams({rep: r.id===cur?'r00':r.id}); li.appendChild(b); return li; }));
+  }
   dash.draw('rank',ul=>{
+    const pl=document.getElementById('pg-leads');
+    if(pl && !pl.hidden){ rankLeads(ul); return; }
+    { const tit=document.getElementById('rank-tit'), note=document.getElementById('rank-note'), lg=document.getElementById('rank-lg');
+      if(tit) tit.textContent='Ranking de representantes'; if(note) note.textContent='Sell-in acumulado jun/25–nov/26 e participação no total.'; if(lg && !lg.hidden) lg.hidden=true; }
     const q=dash.data('rank'); if(q.status!=='ok'){ ul.replaceChildren(); return; }
     const cur=dash.params().rep||'r00'; const mx=d3.max(q.data,r=>r.sellin)||1;
     ul.replaceChildren(...q.data.map((r,i)=>{ const li=document.createElement('li'); const b=document.createElement('button');
